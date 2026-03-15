@@ -12,8 +12,12 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const SignUp = () => {
+
+  const { signup } = useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +25,28 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleSignUp = async () => {
+
+    if (!name || !email || !password || !confirmPassword) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const { error } = await signup(email, password);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Account created successfully");
+      router.replace("/(tabs)/home");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -121,7 +147,10 @@ const SignUp = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.signUpButton}>
+              <TouchableOpacity
+                style={styles.signUpButton}
+                onPress={handleSignUp}
+              >
                 <Text style={styles.signUpText}>Create Account</Text>
               </TouchableOpacity>
 
@@ -146,7 +175,7 @@ const SignUp = () => {
               </Text>
 
               <TouchableOpacity
-                onPress={() => router.push("/sign-in")}
+                onPress={() => router.push("/auth/sign-in")}
               >
                 <Text style={styles.signIn}> Sign In</Text>
               </TouchableOpacity>
@@ -165,122 +194,24 @@ const SignUp = () => {
 export default SignUp;
 
 const styles = StyleSheet.create({
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#FFFFFF"
-  },
-
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "center"
-  },
-
-  container: {
-    padding: 30
-  },
-
-  header: {
-    marginBottom: 40
-  },
-
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#2F7D32",
-    marginBottom: 10
-  },
-
-  subtitle: {
-    fontSize: 16,
-    color: "#6B6B6B"
-  },
-
-  form: {
-    marginBottom: 30
-  },
-
-  label: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: "#444"
-  },
-
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#DDD",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    marginBottom: 20
-  },
-
-  input: {
-    flex: 1,
-    padding: 14,
-    fontSize: 16
-  },
-
-  signUpButton: {
-    backgroundColor: "#2F7D32",
-    padding: 16,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 10
-  },
-
-  signUpText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16
-  },
-
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 25
-  },
-
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#DDD"
-  },
-
-  orText: {
-    marginHorizontal: 10,
-    color: "#777"
-  },
-
-  googleButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#DDD",
-    padding: 16,
-    borderRadius: 10,
-    backgroundColor: "#F9F9F9"
-  },
-
-  googleText: {
-    fontSize: 16,
-    fontWeight: "500"
-  },
-
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center"
-  },
-
-  footerText: {
-    color: "#666"
-  },
-
-  signIn: {
-    color: "#2F7D32",
-    fontWeight: "bold"
-  }
-
+  safeArea:{flex:1,backgroundColor:"#FFFFFF"},
+  scrollContainer:{flexGrow:1,justifyContent:"center"},
+  container:{padding:30},
+  header:{marginBottom:40},
+  title:{fontSize:32,fontWeight:"bold",color:"#2F7D32",marginBottom:10},
+  subtitle:{fontSize:16,color:"#6B6B6B"},
+  form:{marginBottom:30},
+  label:{fontSize:14,marginBottom:8,color:"#444"},
+  inputContainer:{flexDirection:"row",alignItems:"center",borderWidth:1,borderColor:"#DDD",borderRadius:10,paddingHorizontal:12,marginBottom:20},
+  input:{flex:1,padding:14,fontSize:16},
+  signUpButton:{backgroundColor:"#2F7D32",padding:16,borderRadius:10,alignItems:"center",marginTop:10},
+  signUpText:{color:"#FFFFFF",fontWeight:"bold",fontSize:16},
+  dividerContainer:{flexDirection:"row",alignItems:"center",marginVertical:25},
+  divider:{flex:1,height:1,backgroundColor:"#DDD"},
+  orText:{marginHorizontal:10,color:"#777"},
+  googleButton:{flexDirection:"row",justifyContent:"center",alignItems:"center",borderWidth:1,borderColor:"#DDD",padding:16,borderRadius:10,backgroundColor:"#F9F9F9"},
+  googleText:{fontSize:16,fontWeight:"500"},
+  footer:{flexDirection:"row",justifyContent:"center"},
+  footerText:{color:"#666"},
+  signIn:{color:"#2F7D32",fontWeight:"bold"}
 });

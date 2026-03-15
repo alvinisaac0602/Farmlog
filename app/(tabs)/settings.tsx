@@ -1,9 +1,35 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { router } from 'expo-router'
+import { AuthContext } from '../../context/AuthContext'
 
 const Settings = () => {
+
+  const { logout } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+
+      const { error } = await logout();
+
+      if (error) {
+        Alert.alert("Logout Error", error.message);
+        return;
+      }
+
+      router.replace("/auth/sign-in");
+
+    } catch (err) {
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
 
@@ -35,9 +61,15 @@ const Settings = () => {
 
         </View>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          disabled={loading}
+        >
           <MaterialIcons name="logout" size={22} color="#fff" />
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>
+            {loading ? "Logging out..." : "Logout"}
+          </Text>
         </TouchableOpacity>
 
       </View>

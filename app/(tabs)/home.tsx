@@ -11,7 +11,7 @@ const Home = () => {
         <Text style={styles.title}>Your Farms</Text>
 
         <TouchableOpacity style={styles.addFarm}>
-          <Text style={styles.addFarmText}>+ Add Farm</Text>
+          <Text style={styles.addFarmText}>Add Farm</Text>
         </TouchableOpacity>
 
         {/* Farm Card */}
@@ -148,4 +148,5 @@ const styles = StyleSheet.create({
     marginBottom:10,
     alignItems:"center"
   }
+
 })

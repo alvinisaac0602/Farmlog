@@ -8,16 +8,40 @@ import {
   KeyboardAvoidingView,
   Platform
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { router } from "expo-router";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "../../context/AuthContext";
 
 const SignIn = () => {
+
+  const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSignIn = async () => {
+
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await login(email, password);
+
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      router.replace("/(tabs)/home");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -53,6 +77,7 @@ const SignIn = () => {
                   onChangeText={setEmail}
                   style={styles.input}
                   keyboardType="email-address"
+                  autoCapitalize="none"
                 />
               </View>
 
@@ -78,8 +103,14 @@ const SignIn = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.signInButton}>
-                <Text style={styles.signInText}>Sign In</Text>
+              <TouchableOpacity
+                style={styles.signInButton}
+                onPress={handleSignIn}
+                disabled={loading}
+              >
+                <Text style={styles.signInText}>
+                  {loading ? "Signing In..." : "Sign In"}
+                </Text>
               </TouchableOpacity>
 
               <View style={styles.dividerContainer}>
@@ -103,7 +134,7 @@ const SignIn = () => {
               </Text>
 
               <TouchableOpacity
-                onPress={() => router.push("/sign-up")}
+                onPress={() => router.replace("/auth/sign-up")}
               >
                 <Text style={styles.signUp}> Sign Up</Text>
               </TouchableOpacity>

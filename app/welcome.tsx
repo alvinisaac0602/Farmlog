@@ -24,14 +24,14 @@ const Welcome = () => {
             <View style={styles.buttons}>
               <TouchableOpacity
                 style={styles.signUpButton}
-                onPress={() => router.push("/sign-up")}
+                onPress={() => router.push("/auth/sign-up")}
               >
                 <Text style={styles.signUpText}>Sign Up</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.loginButton}
-                onPress={() => router.push("/sign-in")}
+                onPress={() => router.push("/auth/sign-in")}
               >
                 <Text style={styles.loginText}>Login</Text>
               </TouchableOpacity>
